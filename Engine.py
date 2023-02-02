@@ -42,21 +42,80 @@ class GameState():
 
     def getMoves(self, r, c, moves):  # All legal moves of a specific piece
         if self.whiteToMove:  # white pieces
-            if self.board[r-1][c] == "--":
-                moves.append(Move((r, c), (r-1, c), self.board))
-            if self.board[r][c+1] == "--":
-                moves.append(Move((r, c), (r, c+1), self.board))
-            if (0 <= r <= 2) and (5 <= c <= 7):
-                if self.board[r + 1][c] == "--":
-                    moves.append(Move((r, c), (r + 1, c), self.board))
-                if self.board[r][c - 1] == "--":
-                    moves.append(Move((r, c), (r, c - 1), self.board))
+            try:  # Move up
+                if self.board[r-1][c] == "--":
+                    moves.append(Move((r, c), (r-1, c), self.board))
+            except IndexError:
+                pass
+
+            try:  # Move right
+                if self.board[r][c+1] == "--":
+                    moves.append(Move((r, c), (r, c+1), self.board))
+            except IndexError:
+                pass
+
+            if (0 <= r <= 2) and (5 <= c <= 7):  # Checking if we can move backwards (if we are in opponents squares)
+                if self.board[r+1][c] == "--" and (0 <= r+1 <= 1):
+                    moves.append(Move((r, c), (r+1, c), self.board))
+                if self.board[r][c-1] == "--" and (6 <= c-1 <= 7):
+                    moves.append(Move((r, c), (r, c-1), self.board))
+            self.getJumpingMoves(r, c, moves, (r, c))
 
         else:  # black pieces
-            if self.board[r+1][c] == "--":
-                moves.append(Move((r, c), (r+1, c), self.board))
-            if self.board[r][c-1] == "--":
-                moves.append(Move((r, c), (r, c-1), self.board))
+            try:  # Move down
+                if self.board[r+1][c] == "--":
+                    moves.append(Move((r, c), (r+1, c), self.board))
+            except IndexError:
+                pass
+
+            try:  # Move left
+                if self.board[r][c-1] == "--":
+                    moves.append(Move((r, c), (r, c-1), self.board))
+            except IndexError:
+                pass
+
+            if (5 <= r <= 7) and (0 <= c <= 2):  # Checking if we can move backwards (if we are in opponents squares)
+                if self.board[r-1][c] == "--" and (0 <= r-1 <= 1):
+                    moves.append(Move((r, c), (r-1, c), self.board))
+                if self.board[r][c+1] == "--" and (6 <= c+1 <= 7):
+                    moves.append(Move((r, c), (r, c+1), self.board))
+            self.getJumpingMoves(r, c, moves, (r, c))
+
+    # Note to self: add the rare case of jumping back while ur in the opponents squares.
+    def getJumpingMoves(self, r, c, moves, originalSquare):  # Calculating legal moves where we jump on top of pieces.
+        # originalSquare is needed, so we don't forget the starting square while doing recursion
+        # saving the location of the piece when the function is called for the first time in getMoves()
+        startRow = originalSquare[0]
+        startCol = originalSquare[1]
+        if self.whiteToMove:  # white pieces
+            try:
+                if self.board[r-1][c] != "--" and self.board[r-2][c] == "--":  # Checking if we can jump
+                    moves.append(Move((startRow, startCol), (r-2, c), self.board))
+                    self.getJumpingMoves(r-2, c, moves, originalSquare)  # Recursion
+            except IndexError:
+                pass
+
+            try:
+                if self.board[r][c+1] != "--" and self.board[r][c+2] == "--":  # Checking the other direction
+                    moves.append(Move((startRow, startCol), (r, c+2), self.board))
+                    self.getJumpingMoves(r, c+2, moves, originalSquare)
+            except IndexError:
+                pass
+
+        else:  # black pieces
+            try:
+                if self.board[r+1][c] != "--" and self.board[r+2][c] == "--":  # Checking if we can jump
+                    moves.append(Move((startRow, startCol), (r+2, c), self.board))
+                    self.getJumpingMoves(r+2, c, moves, originalSquare)  # Recursion
+            except IndexError:
+                pass
+
+            try:
+                if self.board[r][c-1] != "--" and self.board[r][c-2] == "--":  # Checking the other direction
+                    moves.append(Move((startRow, startCol), (r, c-2), self.board))
+                    self.getJumpingMoves(r, c-2, moves, originalSquare)  # Recursion
+            except IndexError:
+                pass
 
 
 class Move():
