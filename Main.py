@@ -1,7 +1,6 @@
 import pygame as p
-import pygame.time
-
 import Engine
+import network
 
 WIDTH = HEIGHT = 512
 DIMENSION = 8
@@ -9,22 +8,30 @@ SQUARE_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15
 IMAGES = {}
 
-
 # Loading piece images at the start of the program to not load them every time
 def loadImages():
     pieces = ["wp", "bp"]
     for piece in pieces:
         IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
 
-
 def main():
+
+    hostname = input("If host, leave empty and press enter. If connector then enter host ip: ")
+    if hostname != "":
+        socket = network.connect(hostname)
+        player = "white"
+    else:
+        print(network.getHostName())
+        socket = network.host()
+        player = "black"
+
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
 
     gs = Engine.GameState()
-    validMoves = gs.getAllPossibleMoves()
+
     moveMade = False  # to check if a move was made or not
     animate = False
 
@@ -33,6 +40,17 @@ def main():
 
     squareSelected = ()  # keeping track of last clicked square
     playerClicks = []  # keeping track of player clicks [(2, 3), (2, 5)]
+
+    if (player == "black"):
+        opponentMove = network.recvMove(socket)
+        opponentMove = Engine.Move(Engine.notationToSquare(opponentMove[:2]),
+                                   Engine.notationToSquare(opponentMove[2:]),
+                                   gs.board)
+        gs.makeMove(opponentMove)  # make move
+        animateMove(opponentMove, screen, gs.board, clock)
+
+    validMoves = gs.getAllPossibleMoves(player)
+
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
@@ -69,7 +87,7 @@ def main():
 
                 if e.key == p.K_r:  # restart game
                     gs = Engine.GameState()
-                    validMoves = gs.getAllPossibleMoves()
+                    validMoves = gs.getAllPossibleMoves(player)
                     squareSelected = ()
                     playerClicks = []
                     moveMade = False
@@ -79,9 +97,18 @@ def main():
             if animate:
                 try:
                     animateMove(gs.moveLog[-1], screen, gs.board, clock)
+                    #send here gs.moveLog[-1]
+                    network.sendMove(socket, gs.moveLog[-1].getNotation())
+                    opponentMove = network.recvMove(socket)
+                    opponentMove = Engine.Move(Engine.notationToSquare(opponentMove[:2]),
+                                               Engine.notationToSquare(opponentMove[2:]),
+                                               gs.board)
+                    gs.makeMove(opponentMove)  # make move
+                    animateMove(opponentMove, screen, gs.board, clock)
+
                 except IndexError:
                     pass
-            validMoves = gs.getAllPossibleMoves()
+            validMoves = gs.getAllPossibleMoves(player)
             moveMade = False
             animate = False
 
