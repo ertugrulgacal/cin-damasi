@@ -81,7 +81,6 @@ class GameState():
                     moves.append(Move((r, c), (r, c+1), self.board))
             self.getJumpingMoves(r, c, moves, (r, c))
 
-    # Note to self: add the rare case of jumping back while ur in the opponents squares.
     def getJumpingMoves(self, r, c, moves, originalSquare):  # Calculating legal moves where we jump on top of pieces.
         # originalSquare is needed, so we don't forget the starting square while doing recursion
         # saving the location of the piece when the function is called for the first time in getMoves()
@@ -102,6 +101,14 @@ class GameState():
             except IndexError:
                 pass
 
+            if (0 <= startRow <= 2) and (5 <= startCol <= 7):  # moving backwards in opponents squares
+                if startRow == 0:
+                    if self.board[startRow+1][startCol] != "--" and self.board[startRow+2][startCol] == "--":
+                        moves.append(Move((startRow, startCol), (r+2, c), self.board))
+                if startCol == 7:
+                    if self.board[startRow][startCol-1] != "--" and self.board[startRow][startCol-2] == "--":
+                        moves.append(Move((startRow, startCol), (r, c-2), self.board))
+
         else:  # black pieces
             try:
                 if self.board[r+1][c] != "--" and self.board[r+2][c] == "--":  # Checking if we can jump
@@ -117,8 +124,16 @@ class GameState():
             except IndexError:
                 pass
 
+            if (5 <= startRow <= 7) and (0 <= startCol <= 2):  # moving backwards in opponents squares
+                if startRow == 7:
+                    if self.board[startRow-1][startCol] != "--" and self.board[startRow-2][startCol] == "--":
+                        moves.append(Move((startRow, startCol), (r-2, c), self.board))
+                if startCol == 0:
+                    if self.board[startRow][startCol+1] != "--" and self.board[startRow][startCol+2] == "--":
+                        moves.append(Move((startRow, startCol), (r, c+2), self.board))
 
-class Move():
+
+class Move:
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
     filesToCols = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
