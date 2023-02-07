@@ -55,9 +55,9 @@ class GameState():
                 pass
 
             if (0 <= r <= 2) and (5 <= c <= 7):  # Checking if we can move backwards (if we are in opponents squares)
-                if self.board[r+1][c] == "--" and (0 <= r+1 <= 1):
+                if self.board[r+1][c] == "--" and (0 <= r+1 <= 2):
                     moves.append(Move((r, c), (r+1, c), self.board))
-                if self.board[r][c-1] == "--" and (6 <= c-1 <= 7):
+                if self.board[r][c-1] == "--" and (5 <= c-1 <= 7):
                     moves.append(Move((r, c), (r, c-1), self.board))
             self.getJumpingMoves(r, c, moves, (r, c))
 
@@ -75,9 +75,9 @@ class GameState():
                 pass
 
             if (5 <= r <= 7) and (0 <= c <= 2):  # Checking if we can move backwards (if we are in opponents squares)
-                if self.board[r-1][c] == "--" and (0 <= r-1 <= 1):
+                if self.board[r-1][c] == "--" and (5 <= r-1 <= 7):
                     moves.append(Move((r, c), (r-1, c), self.board))
-                if self.board[r][c+1] == "--" and (6 <= c+1 <= 7):
+                if self.board[r][c+1] == "--" and (0 <= c+1 <= 2):
                     moves.append(Move((r, c), (r, c+1), self.board))
             self.getJumpingMoves(r, c, moves, (r, c))
 
