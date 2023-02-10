@@ -21,7 +21,7 @@ class GameState():
         self.board[move.startRow][move.startCol] = "--"  # the square the piece left becomes empty
         self.board[move.endRow][move.endCol] = move.pieceMoved  # the square the piece arrives at
         self.moveLog.append(move)  # logging the move
-        # self.whiteToMove = not self.whiteToMove  # change turn
+        self.whiteToMove = not self.whiteToMove  # change turn
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -30,14 +30,12 @@ class GameState():
             self.board[move.endRow][move.endCol] = "--"  # remove the piece in the position we put it in
             self.whiteToMove = not self.whiteToMove
 
-    def getAllPossibleMoves(self, player):  # All legal moves
+    def getAllPossibleMoves(self):  # All legal moves
         moves = []
 
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
                 pieceColor = self.board[r][c][0]
-                # if (pieceColor == 'w' and self.whiteToMove and player == "white" ) \
-                #         or (pieceColor == 'b' and not self.whiteToMove and player == "black"):
                 if (pieceColor == 'w' and self.whiteToMove) or (pieceColor == 'b' and not self.whiteToMove):
                     self.getMoves(r, c, moves)
         return moves
@@ -160,9 +158,3 @@ class Move:
 
     def getRankFile(self,r ,c):
         return self.colsToFiles[c] + self.rowsToRanks[r]
-
-def notationToSquare(squareNotation):
-    ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
-    filesToCols = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
-
-    return (filesToCols[squareNotation[0]], ranksToRows[squareNotation[1]])
