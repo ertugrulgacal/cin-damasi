@@ -7,12 +7,10 @@ serverSocket.listen(1)
 print("Server is listening")
 
 while True:
-    connectionSocket, addr1 = serverSocket.accept()
-    player1 = connectionSocket
+    player1, _ = serverSocket.accept()
     print("player1 connected.")
 
-    connectionSocket, addr2 = serverSocket.accept()
-    player2 = connectionSocket
+    player2, _ = serverSocket.accept()
     print("player2 connected.")
 
     player1.send("white".encode())
@@ -26,4 +24,3 @@ while True:
         move = player2.recv(1024).decode()
         player1.send(move.encode())
 
-    connectionSocket.close()

@@ -20,6 +20,7 @@ def loadImages():
 def main():
     # Connecting to server
     player = Player.Player()
+    print(player.color)
 
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
