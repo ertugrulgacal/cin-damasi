@@ -34,14 +34,15 @@ class Player:
         return start_square, end_square
 
 
-player = Player()
-
-while True:
-    if (player.color == "white"):
-        player.send(input("> "))
-        print("Received:", player.receive_squares())
-    else:
-        print("Received:", player.receive_squares())
-        player.send(input("> "))
+# # Server testing code. Uncomment to see how server works. (only works with notation like a4d5 or c5f1)
+# player = Player()
+#
+# while True:
+#     if (player.color == "white"):
+#         player.send(input("> "))
+#         print("Received:", player.receive_squares())
+#     else:
+#         print("Received:", player.receive_squares())
+#         player.send(input("> "))
 
 

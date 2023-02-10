@@ -21,7 +21,7 @@ class GameState():
         self.board[move.startRow][move.startCol] = "--"  # the square the piece left becomes empty
         self.board[move.endRow][move.endCol] = move.pieceMoved  # the square the piece arrives at
         self.moveLog.append(move)  # logging the move
-        self.whiteToMove = not self.whiteToMove  # change turn
+        # self.whiteToMove = not self.whiteToMove  # change turn
 
     def undoMove(self):
         if len(self.moveLog) != 0:

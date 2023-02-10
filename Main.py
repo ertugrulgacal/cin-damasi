@@ -18,6 +18,9 @@ def loadImages():
 
 
 def main():
+    # Connecting to server
+    player = Player.Player()
+
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
@@ -33,6 +36,13 @@ def main():
 
     squareSelected = ()  # keeping track of last clicked square
     playerClicks = []  # keeping track of player clicks [(2, 3), (2, 5)]
+    if player.color == "black":
+        opponentMove = player.receive_squares()
+        opponentMove = Engine.Move(opponentMove[0], opponentMove[1], gs.board)
+        gs.makeMove(opponentMove)
+        animateMove(opponentMove, screen, gs.board, clock)
+        validMoves = gs.getAllPossibleMoves()
+
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
@@ -79,6 +89,11 @@ def main():
             if animate:
                 try:
                     animateMove(gs.moveLog[-1], screen, gs.board, clock)
+                    player.send(gs.moveLog[-1].getNotation())
+                    opponentMove = player.receive_squares()
+                    opponentMove = Engine.Move(opponentMove[0], opponentMove[1], gs.board)
+                    gs.makeMove(opponentMove)
+                    animateMove(opponentMove, screen, gs.board, clock)
                 except IndexError:
                     pass
             validMoves = gs.getAllPossibleMoves()
