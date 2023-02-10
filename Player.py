@@ -13,8 +13,13 @@ class Player:
     serverName = "206.189.51.244"
     serverPort = 12000
 
+    def __init__(self):
+        self.color = self.connect()
+
     def connect(self):
         self.clientSocket.connect((self.serverName, self.serverPort))
+        color = self.clientSocket.recv(1024)
+        return color
 
     def disconnect(self):
         self.clientSocket.close()
@@ -23,7 +28,7 @@ class Player:
         self.clientSocket.send(move.encode())
 
     def receive_squares(self):
-        move = self.clientSocket.recv(1024).decode()
+        move = self.clientSocket.recv(1024)
         startSquare = notation_to_square(move[:2])
         endSquare = notation_to_square(move[2:])
         return startSquare, endSquare
