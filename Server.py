@@ -10,11 +10,12 @@ while True:
     connectionSocket, addr1 = serverSocket.accept()
     player1 = connectionSocket
     print("player1 connected.")
-    player1.send("white".encode())
 
     connectionSocket, addr2 = serverSocket.accept()
     player2 = connectionSocket
     print("player2 connected.")
+
+    player1.send("white".encode())
     player2.send("black".encode())
 
     while True:
@@ -24,6 +25,5 @@ while True:
 
         move = player2.recv(1024).decode()
         player1.send(move.encode())
-
 
     connectionSocket.close()
