@@ -8,19 +8,20 @@ DIMENSION = 8
 SQUARE_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15
 IMAGES = {}
-
+player = Player.Player()
 
 # Loading piece images at the start of the program to not load them every time
 def loadImages():
     pieces = ["wp", "bp"]
     for piece in pieces:
-        IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
+        if player.color == "black":
+            fakePiece = "wp" if piece == "bp" else "bp"
+            IMAGES[piece] = p.transform.scale(p.image.load("images/" + fakePiece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
+        else:
+            IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
 
 
 def main():
-    # Connecting to server
-    player = Player.Player()
-
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
