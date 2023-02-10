@@ -14,10 +14,11 @@ class Player:
 
     def __init__(self):
         self.color = self.connect()
+        print(self.color)
 
     def connect(self):
         self.clientSocket.connect((self.serverName, self.serverPort))
-        color = self.clientSocket.recv(1024)
+        color = self.clientSocket.recv(1024).decode()
         return color
 
     def disconnect(self):
