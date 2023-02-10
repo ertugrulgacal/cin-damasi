@@ -28,8 +28,10 @@ class Player:
         self.clientSocket.send(move.encode())
 
     def receive_squares(self):
-        move = self.clientSocket.recv(1024)
-        return move
+        move = self.clientSocket.recv(1024).decode()
+        start_square = notation_to_square(move[:2])
+        end_square = notation_to_square(move[2:])
+        return start_square, end_square
 
 
 player = Player()
