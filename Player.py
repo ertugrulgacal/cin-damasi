@@ -35,7 +35,6 @@ class Player:
 
 
 player = Player()
-player.connect()
 
 while True:
     player.send(input("> "))
