@@ -103,10 +103,10 @@ class GameState():
 
             if (0 <= startRow <= 2) and (5 <= startCol <= 7):  # moving backwards in opponents squares
                 if startRow == 0:
-                    if self.board[startRow+1][startCol] != "--" and self.board[startRow+2][startCol] == "--":
+                    if self.board[startRow+1][startCol] != "--" and self.board[r+2][c] == "--":
                         moves.append(Move((startRow, startCol), (r+2, c), self.board))
                 if startCol == 7:
-                    if self.board[startRow][startCol-1] != "--" and self.board[startRow][startCol-2] == "--":
+                    if self.board[startRow][startCol-1] != "--" and self.board[r][c-2] == "--":
                         moves.append(Move((startRow, startCol), (r, c-2), self.board))
 
         else:  # black pieces
