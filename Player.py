@@ -7,7 +7,6 @@ def notation_to_square(squareNotation):
 
     return (filesToCols[squareNotation[0]], ranksToRows[squareNotation[1]])
 
-
 class Player:
     clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverName = "206.189.51.244"
@@ -29,13 +28,17 @@ class Player:
 
     def receive_squares(self):
         move = self.clientSocket.recv(1024)
-        startSquare = notation_to_square(move[:2])
-        endSquare = notation_to_square(move[2:])
-        return startSquare, endSquare
+        return move
 
 
 player = Player()
 
 while True:
-    player.send(input("> "))
-    print("Received:", player.receive_squares())
+    if (player.color == "white"):
+        player.send(input("> "))
+        print("Received:", player.receive_squares())
+    else:
+        print("Received:", player.receive_squares())
+        player.send(input("> "))
+
+
