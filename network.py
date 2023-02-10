@@ -1,7 +1,4 @@
 import socket
-import sys
-import threading
-
 
 def getHostName():
     return socket.gethostbyname(socket.gethostname())
@@ -54,56 +51,3 @@ def recvMove(clientsocket):
 
 def close(clientsocket):
     clientsocket.close()
-
-
-def client():
-    rendezvous = ("localhost", 55555)
-
-    print("connecting to rendezvous server")
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("localhost", 50001))
-    sock.sendto(b"0", rendezvous)
-
-    while True:
-        data = sock.recv(1024).decode()
-
-        if data.strip() == "ready":
-            print("checked in with the server, waiting")
-            break
-
-    data = sock.recv(1024).decode()
-    ip, source_port, destination_port = data.split(" ")
-    source_port = int(source_port)
-    destination_port = int(destination_port)
-
-    print("\ngot peer")
-    print(f"\tip:\t{ip}")
-    print(f"\tsource port:\t{source_port}")
-    print(f"\tdestination port:\t{destination_port}")
-
-    print("punching hole")
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("localhost", source_port))
-    sock.sendto(b"0", (ip, destination_port))
-
-    def listen():
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(("localhost", source_port))
-
-        while True:
-            data = sock.recv(1024)
-            print(f"\rpeer: {data.decode()}\n", end="")
-
-    listener = threading.Thread(target=listen, daemon=True)
-    listener.start()
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("localhost", destination_port))
-
-    while True:
-        msg = input("> ")
-        sock.sendto(msg.encode(), (ip, source_port))
-
-client()
