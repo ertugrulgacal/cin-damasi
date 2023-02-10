@@ -16,6 +16,7 @@ class GameState():
 
         self.whiteToMove = True
         self.moveLog = []
+        self.gameOver = False
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"  # the square the piece left becomes empty
@@ -38,6 +39,12 @@ class GameState():
                 pieceColor = self.board[r][c][0]
                 if (pieceColor == 'w' and self.whiteToMove) or (pieceColor == 'b' and not self.whiteToMove):
                     self.getMoves(r, c, moves)
+        
+        if len(moves) == 0:
+            self.gameOver = True
+        else:
+            self.gameOver = False
+
         return moves
 
     def getMoves(self, r, c, moves):  # All legal moves of a specific piece
