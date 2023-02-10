@@ -1,5 +1,5 @@
 import pygame as p
-import pygame.time
+import Player
 
 import Engine
 
