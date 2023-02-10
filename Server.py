@@ -7,12 +7,23 @@ serverSocket.listen(1)
 print("Server is listening")
 
 while True:
+    connectionSocket, addr1 = serverSocket.accept()
+    player1 = connectionSocket
+    print("player1 connected.")
+    player1.send("white".encode())
+
+    connectionSocket, addr2 = serverSocket.accept()
+    player2 = connectionSocket
+    print("player2 connected.")
+    player2.send("black".encode())
+
     while True:
-        connectionSocket, addr = serverSocket.accept()
-        print("connectionSocket: ", connectionSocket, "addr:", addr)
+        # Game is on
+        move = player1.recv(1024).decode()
+        player2.send(move.encode())
 
-        sentence = connectionSocket.recv(1024).decode()
-        capitalizedSentence = sentence.upper()
+        move = player2.recv(1024).decode()
+        player1.send(move.encode())
 
-        connectionSocket.send(capitalizedSentence.encode())
-        connectionSocket.close()
+
+    connectionSocket.close()
