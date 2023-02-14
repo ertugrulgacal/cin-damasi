@@ -22,14 +22,19 @@ class GameState():
         self.board[move.startRow][move.startCol] = "--"  # the square the piece left becomes empty
         self.board[move.endRow][move.endCol] = move.pieceMoved  # the square the piece arrives at
         self.moveLog.append(move)  # logging the move
-        self.whiteToMove = not self.whiteToMove  # change turn
-
+        self.isTheGameOver()
+        if self.gameOver:
+            pass
+        else:
+            self.whiteToMove = not self.whiteToMove  # change turn 
+    
     def undoMove(self):
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved  # take the piece back to its position
             self.board[move.endRow][move.endCol] = "--"  # remove the piece in the position we put it in
             self.whiteToMove = not self.whiteToMove
+            self.gameOver = False
 
     def getAllPossibleMoves(self):  # All legal moves
         moves = []
@@ -39,11 +44,6 @@ class GameState():
                 pieceColor = self.board[r][c][0]
                 if (pieceColor == 'w' and self.whiteToMove) or (pieceColor == 'b' and not self.whiteToMove):
                     self.getMoves(r, c, moves)
-        
-        if len(moves) == 0:
-            self.gameOver = True
-        else:
-            self.gameOver = False
 
         return moves
 
@@ -138,6 +138,24 @@ class GameState():
                 if startCol == 0:
                     if self.board[startRow][startCol+1] != "--" and self.board[startRow][startCol+2] == "--":
                         moves.append(Move((startRow, startCol), (r, c+2), self.board))
+
+    def isTheGameOver(self):
+        count = 0
+        if self.whiteToMove:
+            for i in range(0, 3):
+                for j in range(5, 8):
+                    if self.board[i][j] == "wp":
+                        count += 1
+
+        else:
+            for i in range(5, 8):
+                for j in range(0, 3):
+                    if self.board[i][j] == "bp":
+                        count += 1
+
+        if count == 9:
+            self.gameOver = True
+
 
 
 class Move:

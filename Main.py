@@ -27,7 +27,6 @@ def main():
     validMoves = gs.getAllPossibleMoves()
     moveMade = False  # to check if a move was made or not
     animate = False
-    gameOver = False
 
     loadImages()  # load images at the start of the main
     running = True
@@ -39,7 +38,7 @@ def main():
             if e.type == p.QUIT:
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:  # mouse presses
-                if not gameOver:
+                if not gs.gameOver:
                     location = p.mouse.get_pos()  # get mouse locations
                     col = location[0] // SQUARE_SIZE
                     row = location[1] // SQUARE_SIZE
@@ -53,7 +52,7 @@ def main():
 
                     if len(playerClicks) == 2:  # move piece after 2nd click
                         move = Engine.Move(playerClicks[0], playerClicks[1], gs.board)
-                        print(move.getNotation())
+                        # print(move.getNotation())
                         if move in validMoves:
                             gs.makeMove(move)  # make move
                             moveMade = True
@@ -90,11 +89,10 @@ def main():
         drawGameState(screen, gs, validMoves, squareSelected)
         
         if gs.gameOver:
-            gameOver = True
             if gs.whiteToMove:
-                drawText(screen, 'Black wins')
-            else:
                 drawText(screen, 'White wins')
+            else:
+                drawText(screen, 'Black wins')
 
 
         clock.tick(MAX_FPS)
